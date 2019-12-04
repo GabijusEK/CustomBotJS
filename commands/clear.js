@@ -9,11 +9,11 @@ exports.run = async (client, message, args) => {
     const games_channel = client.channels.get(client.config.games_channel_id);
     let clearMessage;
 
-    if (args[0] === 'all') {
+    if (args[0] && args[0].toLowerCase() === 'all') {
         await games_channel
             .fetchMessages({ limit: 100 })
             .then(async collected => {
-                const botMsg = collected.filter(
+                const botMsg = await collected.filter(
                     m => m.author.id == client.user.id
                 );
                 await games_channel.bulkDelete(botMsg, true).then(

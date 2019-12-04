@@ -14,14 +14,25 @@ exports.run = async (client, message, args) => {
 
     if (args.length > 0) {
         if (parseInt(args[args.length - 1]) || args[args.length - 1] == 0) {
-            if (args[args.length - 1] > 0) {
-                timer = parseInt(args[args.length - 1]);
-            }
+            timer = parseInt(args[args.length - 1]);
             args.splice(args.length - 1, 1);
+        }
+        if (isNaN(timer)) {
+            const error = {
+                color: 0xff0000,
+                title: 'Error!',
+                description: 'Minutes is missing or not a number!',
+                timestamp: new Date(),
+                footer: {
+                    icon_url: client.user.avatarURL
+                }
+            };
+            host_channel.send({ embed: error });
+            return;
         }
     }
 
-    if (timer === '1') {
+    if (timer == 1) {
         timerText = 'minute';
     }
     else {
@@ -42,13 +53,7 @@ exports.run = async (client, message, args) => {
         await games_channel
             .send({ embed: countdownEmbed })
             .then(async embedMessage => {
-                setTimeout(function() {
-                    // Checks if message is deleted
-                    const checkIfDeleted = setInterval(function() {
-                        if (embedMessage.deleted) {
-                            clearInterval(checkIfDeleted);
-                        }
-                    }, 1000);
+                const countdownInterval = setTimeout(function() {
                     const countdownEndedEmbed = {
                         color: 0x009900,
                         title: `${countdownEndText}`,
@@ -60,10 +65,17 @@ exports.run = async (client, message, args) => {
                     embedMessage.delete();
                     games_channel.send({ embed: countdownEndedEmbed });
                     if (client.config.host_channel_messages === true) {
-                        host_channel.send(`${countdownEndText}`);
+                        host_channel.send({ embed: countdownEndedEmbed });
                     }
                 }, timer * 60 * 1000);
-            });
+            // Checks if message is deleted
+            const checkIfDeleted = setInterval(function() {
+                if (embedMessage.deleted) {
+                    clearTimeout(countdownInterval);
+                    clearInterval(checkIfDeleted);
+                }
+            }, 1000);
+        });
     }
     catch (error) {
         console.log(`${error}`);

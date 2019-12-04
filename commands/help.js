@@ -71,9 +71,9 @@ exports.run = async (client, message) => {
                             inline: false,
                         },
                         {
-                            name: `\`${configPrefix}squadvote (sqv) <sizes>\``,
+                            name: `\`${configPrefix}squadvote (sqv) <sizes> [-minutes]\``,
                             value:
-                                'Starts squadvote. \nUsage: `all` for 1-10 \nLeave blank for 1 2 4 8 \nChoose your own (e.g. `squadvote 3 4 6 8`)',
+                                'Starts squadvote. \nUsage: `all` for 1-10 \nLeave blank for 1 2 4 8 \nChoose your own (e.g. `squadvote 3 4 6 8`). For an optional custom timer, use `-[minutes]` at the end.',
                             inline: false,
                         },
                         {
@@ -132,6 +132,10 @@ exports.run = async (client, message) => {
                             value: `Clears bot messages from games channel \nUsage: \`all\` to remove all messages \nNumber of messages you want to delete \nExample: \`${configPrefix}clear 10\``,
                             inline: false,
                         },
+                        {
+                            name: `\`${configPrefix}custom [message]\``,
+                            value: `Pings the custom role and sends the provided message. \nExample: \`${configPrefix}custom get voting!\`\nResult: \`@Custom get voting!\` is posted in ${client.channels.get(client.config.games_channel_id)}`
+                        }
                     ],
                     timestamp: new Date(),
                     footer: {
